@@ -35,13 +35,15 @@ const LIST_SHIP = [
 const PAYMENT = [
   {
     id: 1,
-    name: "Direct bank transfer",
+    name: "tien mat",
     desc: "Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.",
+    value: "cash",
   },
   {
     id: 2,
-    name: "Check payments",
+    name: "chuyen khoan",
     desc: "Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.",
+    value: "vnpay",
   },
 ];
 
@@ -62,6 +64,7 @@ const PAYMENT = [
 
 function Checkout() {
   const dispatch = useDispatch();
+  // const
   const LIST_CART = useRef(useSelector((state) => state.cart.cartCheckOut));
   const totalProduct = LIST_CART.current.reduce((total, currentValue) => {
     return total + currentValue.data.price * currentValue.data.quantity;
@@ -79,7 +82,7 @@ function Checkout() {
   const [orderNote, setOrderNote] = useState("");
   const [ship, setShip] = useState(LIST_SHIP[0]);
   const [coupon, setCoupon] = useState("");
-  const [payment, setPayment] = useState("");
+  const [payment, setPayment] = useState(PAYMENT[0]);
   const [checkbox, setCheckbox] = useState(false);
   const [checkDelivery, setCheckDelivery] = useState(false);
   const [totalList, setTotalList] = useState(0);
@@ -130,7 +133,7 @@ function Checkout() {
     const res = await axios.post("http://localhost:3000/orders", {
       deliveryId: delivery.id,
       Note: "lay gio hanh chinh",
-      paymentMethod: "vnpay",
+      paymentMethod: payment.value,
       products: LIST_CART.current.map((item) => {
         return {
           id: item.data.id,
@@ -154,11 +157,18 @@ function Checkout() {
         .then(() => {
           window.localStorage.setItem("cartItem", JSON.stringify([]));
           dispatch(removeAllCart());
+
+          window.localStorage.setItem(
+            "Checkout",
+            JSON.stringify(LIST_CART.current)
+          );
         });
     }
-    // if (res.data.data.paymentMethod === "vnpay") {
-    //   document.getElementById("payment").onsubmit();
-    // }
+    if (payment.value === "vnpay") {
+      document.getElementById("payment").submit();
+    } else {
+      window.location.href = "/checkoutorder";
+    }
   };
 
   return (

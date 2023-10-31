@@ -7,6 +7,9 @@ import Footer from "~/components/Layout/FooterMember";
 const cx = classNames.bind(styles);
 
 function OrderDetails() {
+  const DATA = JSON.parse(window.localStorage.getItem("Checkout"));
+
+  window.localStorage.removeItem("Checkout");
   return (
     <div className={cx("order-wrapper")}>
       {/* Header */}
@@ -59,24 +62,19 @@ function OrderDetails() {
                 <h3 className={cx("title", "total-col")}>Total</h3>
               </div>
               <div className={cx("list-product")}>
-                <div className={cx("row", "item")}>
-                  <p className={cx("name")}>
-                    carefresh®️ Small Pet Bedding - Natural - 500 grams x1
-                  </p>
-                  <div className={cx("total", "total-col")}>
-                    <span className={cx("price")}>$8.33</span>
-                    <span className={cx("vat")}>(e x. VAT)</span>
-                  </div>
-                </div>
-                <div className={cx("row", "item")}>
-                  <p className={cx("name")}>
-                    carefresh®️ Small Pet Bedding - Natural - 500 grams x1
-                  </p>
-                  <div className={cx("total", "total-col")}>
-                    <span className={cx("price")}>$8.33</span>
-                    <span className={cx("vat")}>(ex. VAT)</span>
-                  </div>
-                </div>
+                {DATA.map((item) => {
+                  return (
+                    <div className={cx("row", "item")}>
+                      <p className={cx("name")}>{item.data.title}</p>
+                      <div className={cx("total", "total-col")}>
+                        <span className={cx("price")}>
+                          {item.data.price} VND
+                        </span>
+                        <span className={cx("vat")}>(e x. VAT)</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
             {/* Subtotal Item*/}

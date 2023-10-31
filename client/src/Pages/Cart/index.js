@@ -59,9 +59,24 @@ function Cart() {
     setListCart(temp);
   };
 
-  const deleteCart = (cart_index) => {
-    const temp = [...listCart].filter((item, index) => index !== cart_index);
-    setListCart(temp);
+  const deleteCart = (cart_index, product_index, product) => {
+    const temp = [...listCart];
+    listCart[cart_index].data = listCart[cart_index].data.filter(
+      (item, index) => product_index !== index
+    );
+    if (listCart[cart_index].data.length === 0) {
+      setCartCheckOut((prev) =>
+        prev.filter(
+          (item) => item.user.userId !== listCart[cart_index].user.userId
+        )
+      );
+      setListCart((prev) => prev.filter((item, index) => cart_index !== index));
+    } else {
+      setCartCheckOut((prev) =>
+        prev.filter((item) => item.data.id !== product.id)
+      );
+      setListCart(temp);
+    }
   };
 
   const handleDeleteCart = () => {
@@ -245,7 +260,7 @@ function Cart() {
                               src={images.bin}
                               alt="bin"
                               className={cx("bin")}
-                              onClick={() => deleteCart(index)}
+                              onClick={() => deleteCart(indexUser, index, item)}
                             />
                           </td>
                         </tr>
